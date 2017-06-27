@@ -51,7 +51,7 @@ if __name__ == '__main__':
 	GPIO.output(PIN_NUM_8, GPIO.HIGH)
 
 	receivedBool = True
-	receivedStr = "tri-10-CCW"
+	receivedStr = "ramp-10-CCW"
 	wave = ""
 	speed = 0.
 	rotation = ""
@@ -75,12 +75,12 @@ if __name__ == '__main__':
 				if receivedBool:
 					value = -1
 				sleep(1/(speed + 0.01))
-				seqPos = math.floor(translate(math.sin(value), -1, 1, 0, 8))
+				seqPos = math.floor(translate(math.sin(value), -1, 1, 0.5, 7.5))
 			elif wave == 'tri':
 				if receivedBool:
 					value = 0
 				sleep(1/(speed + 0.01))
-				seqPos = math.floor(translate((abs(signal.sawtooth(value)*2)-1), 0-1, 1, 0, 8))
+				seqPos = math.floor(translate((abs(signal.sawtooth(value)*2)-1), 0-1, 1, 0.5, 7.5))
 			elif wave == 'ramp':
 				if receivedBool:
 					value = 0
