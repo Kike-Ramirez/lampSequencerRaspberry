@@ -8,7 +8,7 @@ import math
 from scipy import signal
 
 
-SPEED_VAL = 0.25
+SPEED_VAL = 3.
 
 PIN_NUM_1 = 4
 PIN_NUM_2 = 17
@@ -52,7 +52,7 @@ if __name__ == '__main__':
 	GPIO.output(PIN_NUM_8, GPIO.HIGH)
 
 	receivedBool = True
-	receivedStr = "tri-0-CW"
+	receivedStr = "tri-10-CW"
 	wave = ""
 	speed = 0.
 	rotation = ""
@@ -75,17 +75,17 @@ if __name__ == '__main__':
 			if wave == 'sin':
 				if receivedBool:
 					value = -1.5
-				value += speed / (1000 * SPEED_VAL)
+				value += (speed * SPEED_VAL) / 1000
 				seqPos = math.floor(translate(math.sin(value), -1, 1, 0.5, 7.5))
 			elif wave == 'tri':
 				if receivedBool:
 					value = -0.2249
-				value += speed / (1000 * SPEED_VAL)
+				value += (speed * SPEED_VAL) / 1000
 				seqPos = math.floor(translate((abs(signal.sawtooth(value) * 2) - 1), 1, -1, 0.5, 7.5))
 			elif wave == 'ramp':
 				if receivedBool:
 					value = 0
-				value += speed / (500 * SPEED_VAL)
+				value += (speed  * SPEED_VAL)/ 500
 				seqPos = math.floor(translate(signal.sawtooth(value), -1, 1, 0, 8))
 
 			if rotation == 'CCW':
