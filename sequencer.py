@@ -1,5 +1,6 @@
 # TODO:
 # 	- Refresh properties only when receivedBool == True
+# 	- Daemon on startup
 
 import RPi.GPIO as GPIO
 from time import sleep
@@ -7,7 +8,7 @@ import math
 from scipy import signal
 
 
-
+SPEED_VAL = 0.25
 
 PIN_NUM_1 = 4
 PIN_NUM_2 = 17
@@ -51,7 +52,7 @@ if __name__ == '__main__':
 	GPIO.output(PIN_NUM_8, GPIO.HIGH)
 
 	receivedBool = True
-	receivedStr = "ramp-10-CCW"
+	receivedStr = "tri-0-CW"
 	wave = ""
 	speed = 0.
 	rotation = ""
@@ -66,32 +67,32 @@ if __name__ == '__main__':
 			# if ...:
 			# 	receivedBool = True
 
-
+			sleep(0.01)
 			wave = receivedStr.split("-")[0]
 			speed = float(receivedStr.split("-")[1])
 			rotation = receivedStr.split("-")[2]
 
 			if wave == 'sin':
 				if receivedBool:
-					value = -1
-				sleep(1/(speed + 0.01))
+					value = -1.5
+				value += speed / (1000 * SPEED_VAL)
 				seqPos = math.floor(translate(math.sin(value), -1, 1, 0.5, 7.5))
 			elif wave == 'tri':
 				if receivedBool:
-					value = 0
-				sleep(1/(speed + 0.01))
-				seqPos = math.floor(translate((abs(signal.sawtooth(value)*2)-1), 0-1, 1, 0.5, 7.5))
+					value = -0.2249
+				value += speed / (1000 * SPEED_VAL)
+				seqPos = math.floor(translate((abs(signal.sawtooth(value) * 2) - 1), 1, -1, 0.5, 7.5))
 			elif wave == 'ramp':
 				if receivedBool:
 					value = 0
-				sleep(0.5/(speed + 0.01))
+				value += speed / (500 * SPEED_VAL)
 				seqPos = math.floor(translate(signal.sawtooth(value), -1, 1, 0, 8))
 
 			if rotation == 'CCW':
 				seqPos = 7 - seqPos
 
 
-			if prevPos != seqPos and speed != 0:
+			if (prevPos != seqPos) and (speed != 0.):
 				if seqPos == 0:
 					GPIO.output(PIN_NUM_1, GPIO.LOW)
 					GPIO.output(PIN_NUM_2, GPIO.HIGH)
@@ -175,7 +176,6 @@ if __name__ == '__main__':
 			prevPos = seqPos
 
 
-			value += speed / 100
 			receivedBool = False		# Indent when if condition added
 
 
